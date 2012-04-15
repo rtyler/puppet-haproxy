@@ -34,5 +34,13 @@ describe 'haproxy' do
         'source' => 'puppet:///modules/haproxy/haproxy.default.etc'
       )
     end
+
+    it 'should set up /etc/haproxy/haproxy.cfg as a concat resource' do
+      subject.should contain_concat('/etc/haproxy/haproxy.cfg').with(
+        'owner' => 'root',
+        'group' => 'root',
+        'mode'  => 644
+      )
+    end
   end
 end
