@@ -21,4 +21,28 @@ describe 'haproxy::global' do
     )
   end
 
+  context 'with options' do
+    context 'debug_mode => false' do
+      let(:params) do
+        { :debug_mode => false }
+      end
+
+      it {
+        subject.should_not contain_concat__fragment('enable debugging')
+      }
+    end
+    context 'debug_mode => true' do
+      let(:params) do
+        { :debug_mode => true }
+      end
+
+      it {
+        subject.should contain_concat__fragment('enable debugging').with(
+          'target'  => config_file,
+          'order'   => 2,
+          'content' => "\tdebug\n"
+        )
+      }
+    end
+  end
 end

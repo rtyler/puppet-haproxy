@@ -1,6 +1,6 @@
-define haproxy::global() {
-  # NOTE: I feel like this include should be unnecessary, but currently is
-  # because we cannot set the :pre_condition properly inside of rspec-puppet
+define haproxy::global(
+  $debug_mode=false
+) {
   include haproxy
   include concat::setup
 
@@ -9,5 +9,17 @@ define haproxy::global() {
       target  => $haproxy::config_file,
       content => "global\n",
       order   => 1;
+  }
+
+  ############################
+  # GNARLY PARAMETER HANDLING MESS, PROCEED NO FURTHER
+  ############################
+  if ($debug_mode) {
+    concat::fragment {
+      'enable debugging' :
+        target  => $haproxy::config_file,
+        order   => 2,
+        content => "\tdebug\n";
+    }
   }
 }
