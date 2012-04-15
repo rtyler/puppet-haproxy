@@ -13,3 +13,7 @@ def no_concat_for(name, title)
   end
   it { should_not contain_concat__fragment(title) }
 end
+
+def config_line(value)
+  "\t#{value}\n"
+end

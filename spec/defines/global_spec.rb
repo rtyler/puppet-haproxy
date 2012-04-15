@@ -34,15 +34,13 @@ describe 'haproxy::global' do
         should contain_concat__fragment('enable debugging').with(
           'target'  => config_file,
           'order'   => 2,
-          'content' => "\tdebug\n"
+          'content' => config_line('debug')
         )
       }
     end
-
     context 'quiet_mode => false' do
       no_concat_for(:quiet_mode, 'enable quiet mode')
     end
-
     context 'quiet_mode => true' do
       let(:params) do
         { :quiet_mode => true }
@@ -52,7 +50,83 @@ describe 'haproxy::global' do
         should contain_concat__fragment('enable quiet mode').with(
           'target'  => config_file,
           'order'   => 2,
-          'content' => "\tquiet\n"
+          'content' => config_line('quiet')
+        )
+      }
+    end
+    context 'chroot => <some directory>' do
+      let(:chroot) { '/var/test-dir' }
+      let(:params) do
+        { :chroot => '/var/test-dir' }
+      end
+
+      it {
+        should contain_concat__fragment("chroot to #{chroot}").with(
+          'target'  => config_file,
+          'order'   => 2,
+          'content' => config_line("chroot #{chroot}")
+        )
+      }
+
+      it {
+        should contain_file(chroot).with(
+          'ensure' => 'directory',
+          'mode'   => 755
+        )
+      }
+    end
+    context 'daemonize => false' do
+      no_concat_for(:daemonize, 'daemonize')
+    end
+    context 'daemonize => true' do
+      let(:params) do
+        { :daemonize => true }
+      end
+
+      it {
+        should contain_concat__fragment('daemonize').with(
+          'target'  => config_file,
+          'order'   => 2,
+          'content' => config_line('daemon')
+        )
+      }
+    end
+    context 'gid => <some number>' do
+      let(:gid) { 1337 }
+      let(:params) do
+        { :gid => gid }
+      end
+
+      it {
+        should contain_concat__fragment("gid #{gid}").with(
+          'target'  => config_file,
+          'order'   => 2,
+          'content' => config_line("gid #{gid}")
+        )
+      }
+      it {
+        should contain_group(gid).with(
+          'ensure' => 'present',
+          'gid'    => gid
+        )
+      }
+    end
+    context 'group => <some group name>' do
+      let(:group) { 'rspec' }
+      let (:params) do
+        { :group => group }
+      end
+      it {
+        should contain_concat__fragment("group #{group}").with(
+          'target'  => config_file,
+          'order'   => 2,
+          'content' => config_line("group #{group}")
+        )
+      }
+      it {
+        should contain_group(group).with(
+          'ensure' => 'present',
+          'name'   => group
         )
       }
     end
