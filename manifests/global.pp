@@ -1,5 +1,6 @@
 define haproxy::global(
-  $debug_mode=false
+  $debug_mode=false,
+  $quiet_mode=false
 ) {
   include haproxy
   include concat::setup
@@ -20,6 +21,14 @@ define haproxy::global(
         target  => $haproxy::config_file,
         order   => 2,
         content => "\tdebug\n";
+    }
+  }
+  if ($quiet_mode) {
+    concat::fragment {
+      'enable quiet mode' :
+        target  => $haproxy::config_file,
+        order   => 2,
+        content => "\tquiet\n";
     }
   }
 }
