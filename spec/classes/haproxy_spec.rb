@@ -16,5 +16,23 @@ describe 'haproxy' do
         'ensure' => 'present'
       )
     end
+
+    it 'should install the haproxy service' do
+      subject.should contain_service('haproxy').with(
+        'ensure'     => 'running',
+        'enable'     => 'true',
+        'hasrestart' => 'true',
+        'hasstatus'  => 'true'
+      )
+    end
+
+    it 'should install a new /etc/default/haproxy' do
+      subject.should contain_file('/etc/default/haproxy').with(
+        'ensure' => 'present',
+        'owner'  => 'root',
+        'group'  => 'root',
+        'source' => 'puppet:///modules/haproxy/haproxy.default.etc'
+      )
+    end
   end
 end
