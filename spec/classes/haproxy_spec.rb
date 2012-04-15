@@ -1,0 +1,3 @@
+
+describe 'haproxy' do
+end
