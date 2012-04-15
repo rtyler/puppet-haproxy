@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'haproxy::global' do
+describe 'haproxy::defaults' do
   let(:title) { 'unused' }
 
   it {
